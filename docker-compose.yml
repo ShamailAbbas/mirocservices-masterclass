@@ -96,9 +96,9 @@ services:
   order-management:
     image: thallavi/order-management:latest
     environment:
-      PRODUCT_INVENTORY_API_HOST: http://product-inventory:3002
-      PRODUCT_CATALOG_API_HOST: http://product-catalog:3001
-      SHIPPING_HANDLING_API_HOST: http://shipping-and-handling:8080
+      PRODUCT_INVENTORY_API_HOST: http://product-inventory
+      PRODUCT_CATALOG_API_HOST: http://product-catalog
+      SHIPPING_HANDLING_API_HOST: http://shipping-and-handling
       SPRING_DATA_MONGODB_URI: mongodb://miroc-mongo:27017/order_management
       SPRING_DATA_MONGODB_DATABASE: order_management
     depends_on:
@@ -113,12 +113,12 @@ services:
   ecommerce-ui:
     image: thallavi/ecommerce-ui:latest
     environment:
-      REACT_APP_PROFILE_API_HOST: http://profile-management:3003
-      REACT_APP_PRODUCT_API_HOST: http://product-catalog:3001
-      REACT_APP_INVENTORY_API_HOST: http://product-inventory:3002
-      REACT_APP_ORDER_API_HOST: http://order-management:9090
-      REACT_APP_SHIPPING_API_HOST: http://shipping-and-handling:8080
-      REACT_APP_CONTACT_API_HOST: http://contact-support-team:8000
+      REACT_APP_PROFILE_API_HOST: http://profile-management
+      REACT_APP_PRODUCT_API_HOST: http://product-catalog
+      REACT_APP_INVENTORY_API_HOST: http://product-inventory
+      REACT_APP_ORDER_API_HOST: http://order-management
+      REACT_APP_SHIPPING_API_HOST: http://shipping-and-handling
+      REACT_APP_CONTACT_API_HOST: http://contact-support-team
     depends_on:
       - profile-management
       - product-catalog
