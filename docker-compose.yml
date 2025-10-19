@@ -1,0 +1,135 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: miroc-mongo
+    networks: [miroc-net]
+    ports:
+      - "27017:27017"
+
+  postgres:
+    image: postgres:15
+    container_name: miroc-postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: inventory_db
+    networks: [miroc-net]
+    ports:
+      - "5432:5432"
+
+  mysql:
+    image: mysql:8.0
+    container_name: miroc-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    networks: [miroc-net]
+    ports:
+      - "3306:3306"
+
+  product-catalog:
+    image: thallavi/product-catalog:latest
+    environment:
+      MONGODB_HOST: miroc-mongo
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: products_db
+    depends_on:
+      - mongo
+    networks: [miroc-net]
+    ports:
+      - "3001:3001"
+
+  shipping-and-handling:
+    image: thallavi/shipping-and-handling:latest
+    environment:
+      MONGO_URI: mongodb://miroc-mongo:27017/shipping_handling
+    depends_on:
+      - mongo
+    networks: [miroc-net]
+    ports:
+      - "8080:8080"
+
+  contact-support-team:
+    image: thallavi/contact-support-team:latest
+    environment:
+      MONGODB_HOST: miroc-mongo
+      MONGODB_PORT: 27017
+      MONGODB_DATABASE: contact_db
+    depends_on:
+      - mongo
+    networks: [miroc-net]
+    ports:
+      - "8000:8000"
+
+  product-inventory:
+    image: thallavi/product-inventory:latest
+    environment:
+      POSTGRES_HOST: miroc-postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: inventory_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    depends_on:
+      - postgres
+    networks: [miroc-net]
+    ports:
+      - "3002:3002"
+
+  profile-management:
+    image: thallavi/profile-management:latest
+    environment:
+      MYSQL_HOST: miroc-mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
+    depends_on:
+      - mysql
+    networks: [miroc-net]
+    ports:
+      - "3003:3003"
+
+  order-management:
+    image: thallavi/order-management:latest
+    environment:
+      PRODUCT_INVENTORY_API_HOST: http://product-inventory:3002
+      PRODUCT_CATALOG_API_HOST: http://product-catalog:3001
+      SHIPPING_HANDLING_API_HOST: http://shipping-and-handling:8080
+      SPRING_DATA_MONGODB_URI: mongodb://miroc-mongo:27017/order_management
+      SPRING_DATA_MONGODB_DATABASE: order_management
+    depends_on:
+      - mongo
+      - product-catalog
+      - product-inventory
+      - shipping-and-handling
+    networks: [miroc-net]
+    ports:
+      - "9090:9090"
+
+  ecommerce-ui:
+    image: thallavi/ecommerce-ui:latest
+    environment:
+      REACT_APP_PROFILE_API_HOST: http://profile-management:3003
+      REACT_APP_PRODUCT_API_HOST: http://product-catalog:3001
+      REACT_APP_INVENTORY_API_HOST: http://product-inventory:3002
+      REACT_APP_ORDER_API_HOST: http://order-management:9090
+      REACT_APP_SHIPPING_API_HOST: http://shipping-and-handling:8080
+      REACT_APP_CONTACT_API_HOST: http://contact-support-team:8000
+    depends_on:
+      - profile-management
+      - product-catalog
+      - product-inventory
+      - order-management
+      - shipping-and-handling
+      - contact-support-team
+    networks: [miroc-net]
+    ports:
+      - "4000:4000"
+
+networks:
+  miroc-net:
+    driver: bridge

@@ -2,10 +2,6 @@
 
 This Docker image provides a Spring Boot application for managing user orders in an e-commerce platform. It allows adding products to a cart, calculating cart totals, and processing purchases.
 
-## Version 2.0.0 Update
-
-In version 2.0.0, the Order Management Microservice is updated to include MongoDB integration, which relies on environment variables to configure the MongoDB connection and other application settings.
-
 ```
 docker run --network my-network \
   -e PRODUCT_INVENTORY_API_HOST=http://product-inventory \
@@ -49,18 +45,6 @@ The container requires the following environment variables to be set:
 
 These variables are used by the application to communicate with the necessary microservices to fetch product details, inventory status, and shipping information.
 
-## Docker Network
-
-To ensure the Order Management microservice can communicate with the required microservices, it should be connected to the same Docker network. Here’s how you can set it up:
-
-1. Create a Docker network if you haven't already:
-
-   ```bash
-   docker network create my-network
-   ```
-
-2. Run the Order Management microservice along with the other microservices on the same network, using the `--network` flag as shown in the usage example.
-
 ## Building the Image
 
 To build the Docker image yourself, follow these steps:
@@ -71,15 +55,3 @@ To build the Docker image yourself, follow these steps:
    ```bash
    docker build -t thallavi/order-management .
    ```
-
-## Contributing
-
-If you would like to contribute to the Order Management microservice, please follow the contributing guidelines outlined in the [CONTRIBUTING.md](./CONTRIBUTING.md) file.
-
-## License
-
-This project is licensed under the [MIT License](./LICENSE).
-
-## Support
-
-For any issues or questions regarding this Docker image or the Order Management microservice, please [open an issue](https://github.com/your-repo/issues) on the GitHub repository.
