@@ -1,83 +1,20 @@
-.product-detail-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    display: flex;
-    align-items: flex-start;
-  }
-  
-  .product-image {
-    flex: 1;
-    margin-right: 20px;
-  }
-  
-  .product-image img {
-    width: 100%;
-    border-radius: 4px;
-  }
-  
-  .product-info {
-    flex: 2;
-  }
-  
-  .product-info h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  
-  .product-description {
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
-  
-  .product-price {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .product-category {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 20px;
-  }
-  
-
-  .product-detail-container .back-button {
-    display: inline-block;
-    padding: 8px 16px;
-    font-size: 14px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-  }
-
-  .product-detail-container .purchase-button {
-    display: inline-block;
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #f0c14b;
-    color: #111;
-    text-decoration: none;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 20px;
-  }
-
-
-  .product-detail-container .product-quantity {
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-  
-  
-  .purchase-button:hover {
-    background-color: #ddb347;
-  }
-  
-  .purchase-button {
-    margin-right: 20px; /* adjust the value as needed */
-  }
-  
+/* Minimal professional theme for product detail */
+.product-detail-container{
+  max-width:900px;
+  margin:0 auto;
+  padding:24px;
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+}
+.product-image{flex:1;margin-right:16px}
+.product-image img{width:100%;border-radius:8px}
+.product-info{flex:2}
+.product-info h2{font-size:22px;margin:0 0 8px;color:var(--text)}
+.product-description{color:var(--muted);margin:0 0 12px}
+.product-price{font-size:20px;font-weight:700;margin:0 0 12px}
+.product-category{font-size:13px;color:var(--muted);margin-bottom:16px}
+.back-button{display:inline-block;padding:8px 12px;font-size:13px;background:transparent;border-radius:6px;border:1px solid rgba(0,0,0,0.06);color:var(--text)}
+.purchase-button{display:inline-block;padding:10px 16px;font-size:14px;background:var(--accent);color:#fff;border-radius:8px;border:none;cursor:pointer}
+.purchase-button:hover{opacity:0.95}
+.product-quantity{font-size:14px;margin:0 0 12px}
