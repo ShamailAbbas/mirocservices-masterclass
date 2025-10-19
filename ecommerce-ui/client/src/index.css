@@ -1,11 +1,14 @@
+
 :root{
-  --bg: #f7f7f8;
+  /* Feminine palette */
+  --bg: #fff7fb; /* very light pink */
   --panel: #ffffff;
-  --muted: #6b6b6b;
-  --text: #222222;
-  --accent: #2b7cff; /* single accent color */
-  --radius: 8px;
-  --gap: 16px;
+  --muted: #8a6b7a; /* soft mauve text */
+  --text: #3b2b33; /* deep mauve/brown */
+  --accent: #d76c9e; /* rose/magenta accent */
+  --accent-2: #f6d1e0; /* pale rose for panels */
+  --radius: 10px;
+  --gap: 18px;
 }
 
 *{box-sizing:border-box}
@@ -22,8 +25,12 @@ body{
 
 code{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace}
 
+
 a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
+
+/* subtle form controls */
+input,textarea,select{border:1px solid rgba(0,0,0,0.06);padding:8px;border-radius:8px}
 
 button{font-family:inherit}
 
