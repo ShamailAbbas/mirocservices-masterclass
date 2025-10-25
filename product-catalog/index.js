@@ -21,7 +21,7 @@ MongoClient.connect(mongoUrl, { useUnifiedTopology: true }, async (err, client) 
     console.error('Error connecting to MongoDB:', err);
     process.exit(1);
   }
-  console.log('Connected to MongoDB');
+  console.log('Connected to MongoDB.');
   const db = client.db(dbName);
 
   // Check if products collection is empty

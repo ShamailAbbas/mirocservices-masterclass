@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-management
+  namespace: ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile-management
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: profile-management
+        version: v1
+    spec:
+      containers:
+      - name: profile-management
+        image: thallavi/profile-management:latest
+        ports:
+        - containerPort: 3003
+        env:
+        - name: MYSQL_HOST
+          value: "ecommerce-mysql"
+        - name: MYSQL_PORT
+          value: "3306"
+        - name: MYSQL_DATABASE
+          value: "auth_db"
+        - name: MYSQL_USER
+          value: "dev"
+        - name: MYSQL_PASSWORD
+          value: "dev"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-management
+  namespace: ecommerce
+spec:
+  ports:
+  - port: 3003
+    name: http
+  selector:
+    app: profile-management

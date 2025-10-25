@@ -1,4 +1,4 @@
-name: CI - Build and Push Microservices
+name: CI - Build, Push, and Update Manifests
 
 on:
   push:
@@ -8,9 +8,6 @@ on:
 
 env:
   DOCKER_HUB_USER: thallavi
-  DOCKER_HUB_REPO_PREFIX: thallavi
-  # Optional tag can be dynamic, e.g., use GITHUB_SHA or latest
-  IMAGE_TAG: latest
 
 jobs:
   build-and-push:
@@ -21,23 +18,28 @@ jobs:
       contents: read
       packages: write
 
+    outputs:
+      ecommerce-ui: ${{ steps.changes.outputs.ecommerce-ui }}
+      product-catalog: ${{ steps.changes.outputs.product-catalog }}
+      product-inventory: ${{ steps.changes.outputs.product-inventory }}
+      order-management: ${{ steps.changes.outputs.order-management }}
+      shipping-and-handling: ${{ steps.changes.outputs.shipping-and-handling }}
+      profile-management: ${{ steps.changes.outputs.profile-management }}
+      contact-support-team: ${{ steps.changes.outputs.contact-support-team }}
+
     steps:
-      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Set up Docker Buildx (for better build caching and multi-arch)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3. Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 4. Determine changed directories (for optimization)
       - name: Detect changed services
         id: changes
         uses: dorny/paths-filter@v3
@@ -58,15 +60,16 @@ jobs:
             contact-support-team:
               - 'contact-support-team/**'
 
-      # 5. Build & push only changed images
+      - name: Set IMAGE_TAG
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
       - name: Build and push ecommerce-ui
         if: steps.changes.outputs.ecommerce-ui == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./ecommerce-ui
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/ecommerce-ui:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/ecommerce-ui:${{ env.IMAGE_TAG }}
 
       - name: Build and push product-catalog
         if: steps.changes.outputs.product-catalog == 'true'
@@ -74,8 +77,7 @@ jobs:
         with:
           context: ./product-catalog
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/product-catalog:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/product-catalog:${{ env.IMAGE_TAG }}
 
       - name: Build and push product-inventory
         if: steps.changes.outputs.product-inventory == 'true'
@@ -83,8 +85,7 @@ jobs:
         with:
           context: ./product-inventory
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/product-inventory:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/product-inventory:${{ env.IMAGE_TAG }}
 
       - name: Build and push order-management
         if: steps.changes.outputs.order-management == 'true'
@@ -92,8 +93,7 @@ jobs:
         with:
           context: ./order-management
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/order-management:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/order-management:${{ env.IMAGE_TAG }}
 
       - name: Build and push shipping-and-handling
         if: steps.changes.outputs.shipping-and-handling == 'true'
@@ -101,8 +101,7 @@ jobs:
         with:
           context: ./shipping-and-handling
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/shipping-and-handling:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/shipping-and-handling:${{ env.IMAGE_TAG }}
 
       - name: Build and push profile-management
         if: steps.changes.outputs.profile-management == 'true'
@@ -110,8 +109,7 @@ jobs:
         with:
           context: ./profile-management
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/profile-management:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/profile-management:${{ env.IMAGE_TAG }}
 
       - name: Build and push contact-support-team
         if: steps.changes.outputs.contact-support-team == 'true'
@@ -119,11 +117,31 @@ jobs:
         with:
           context: ./contact-support-team
           push: true
-          tags: |
-            ${{ env.DOCKER_HUB_USER }}/contact-support-team:${{ env.IMAGE_TAG }}
+          tags: ${{ env.DOCKER_HUB_USER }}/contact-support-team:${{ env.IMAGE_TAG }}
 
-      # 6. Optional - Summary
-      - name: Job summary
+  update-manifests:
+    name: Update Kubernetes Manifests
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set IMAGE_TAG
+        run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
+
+      - name: Update manifests for changed services
         run: |
-          echo "✅ Build complete!"
-          echo "Tag: ${{ env.IMAGE_TAG }}"
+          services=("ecommerce-ui" "product-catalog" "product-inventory" "order-management" "shipping-and-handling" "profile-management" "contact-support-team")
+
+          for service in "${services[@]}"; do
+            changed="${{ needs.build-and-push.outputs[${service}] }}"
+            if [ "$changed" == "true" ]; then
+              manifest_file="manifest/${service}.yaml"
+              if [ -f "$manifest_file" ]; then
+                echo "Updating image tag for changed service: $service"
+                sed -i "s|image: ${{ env.DOCKER_HUB_USER }}/$service:.*|image: ${{ env.DOCKER_HUB_USER }}/$service:${GITHUB_SHA}|" "$manifest_file"
+              fi
+            fi
+          done

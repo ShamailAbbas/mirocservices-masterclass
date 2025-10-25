@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: contact-support-team
+  namespace: ecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: contact-support-team
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: contact-support-team
+        version: v1
+    spec:
+      containers:
+      - name: contact-support-team
+        image: thallavi/contact-support-team:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGODB_HOST
+          value: "ecommerce-mongo"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MONGODB_DATABASE
+          value: "contact_db"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: contact-support-team
+  namespace: ecommerce
+spec:
+  ports:
+  - port: 8000
+    name: http
+  selector:
+    app: contact-support-team

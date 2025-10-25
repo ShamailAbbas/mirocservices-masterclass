@@ -29,13 +29,13 @@ async function connectToMySQL() {
     try {
       connection = await mysql.createConnection(dbConfig);
       console.log('Connected to MySQL');
-      
+
       // Call the createUsersTable function after successful connection
       await createUsersTable();
-      
+
       break;
     } catch (error) {
-      console.error(`Error connecting to MySQL (attempt ${i + 1}):`, error);
+      console.error(` Error connecting to MySQL (attempt ${i + 1}):`, error);
       if (i === maxRetries - 1) {
         console.error('Max retries reached. Exiting...');
         process.exit(1);
