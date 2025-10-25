@@ -163,6 +163,25 @@ jobs:
             fi
           done
 
+      - name: Commit and push updated manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stage updated manifest files
+          git add manifest/*.yaml
+
+          # Only commit if there are changes
+          if ! git diff --cached --quiet; then
+            git commit -m "Update manifests with images for commit ${GITHUB_SHA}"
+            git push
+            echo "✅ Manifests updated and pushed"
+          else
+            echo "No changes detected in manifests. Skipping commit."
+          fi
+
+
+
   final-job:
     name: Final Job
     runs-on: ubuntu-latest

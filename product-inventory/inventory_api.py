@@ -33,7 +33,7 @@ for retry in range(max_retries):
             print(f"Connection attempt {retry + 1} failed. Retrying in {retry_delay} seconds...")
             time.sleep(retry_delay)
         else:
-            print("Max retries reached. Unable to connect to the database.")
+            print("Max retries reached.Unable to connect to the database.")
             raise e
 
 # Create the inventory table if it doesn't exist

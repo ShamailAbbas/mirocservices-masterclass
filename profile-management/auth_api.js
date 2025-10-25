@@ -37,7 +37,7 @@ async function connectToMySQL() {
     } catch (error) {
       console.error(` Error connecting to MySQL (attempt ${i + 1}):`, error);
       if (i === maxRetries - 1) {
-        console.error('Max retries reached. Exiting..');
+        console.error('Max retries reached. Exiting.');
         process.exit(1);
       }
       await new Promise(resolve => setTimeout(resolve, retryDelay));
