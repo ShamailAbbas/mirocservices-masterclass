@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: contact-support-team
-        image: thallavi/contact-support-team:latest
+        image: thallavi/contact-support-team:1608189357bd9a6b7c1f105bc48e00ccebe4fd05
         ports:
         - containerPort: 8000
         env:

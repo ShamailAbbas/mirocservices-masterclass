@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: product-inventory
-        image: thallavi/product-inventory:latest
+        image: thallavi/product-inventory:1608189357bd9a6b7c1f105bc48e00ccebe4fd05
         ports:
         - containerPort: 3002
         env:
