@@ -18,7 +18,7 @@ const productsData = JSON.parse(fs.readFileSync('products.json'));
 // Connect to MongoDB
 MongoClient.connect(mongoUrl, { useUnifiedTopology: true }, async (err, client) => {
   if (err) {
-    console.error('Error connecting to MongoDB ', err);
+    console.error('Error connecting to MongoDB', err);
     process.exit(1);
   }
   console.log('Connected to MongoDB.');

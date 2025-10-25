@@ -20,7 +20,7 @@ contact_messages = db['contact_messages']
 @app.route('/api/contact-message', methods=['GET'])
 def get_contact_message():
     response = {
-        'message': "We're here to help! If you have any questions, concerns, or feedback, please don't hesitate to reach out to us. Our dedicated support team is ready to assist you ."
+        'message': "We're here to help! If you have any questions, concerns, or feedback, please don't hesitate to reach out to us. Our dedicated support team is ready to assist you."
     }
     return jsonify(response)
 

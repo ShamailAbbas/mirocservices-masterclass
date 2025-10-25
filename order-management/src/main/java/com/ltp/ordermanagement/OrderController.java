@@ -20,7 +20,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @CrossOrigin(origins = "*") // Allow  any origin
+    @CrossOrigin(origins = "*") // Allow any origin
     @PostMapping("/{userId}/cart")
     public String addToCart(@PathVariable Long userId, @RequestBody Product product) {
         return orderService.addToCart(userId, product);
