@@ -63,6 +63,7 @@ jobs:
       - name: Set IMAGE_TAG
         run: echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_ENV
 
+      # Build & push steps for all services (conditional)
       - name: Build and push ecommerce-ui
         if: steps.changes.outputs.ecommerce-ui == 'true'
         uses: docker/build-push-action@v6
@@ -136,7 +137,23 @@ jobs:
           services=("ecommerce-ui" "product-catalog" "product-inventory" "order-management" "shipping-and-handling" "profile-management" "contact-support-team")
 
           for service in "${services[@]}"; do
-            changed="${{ needs.build-and-push.outputs[${service}] }}"
+            # Map service name to static output
+            if [ "$service" == "ecommerce-ui" ]; then
+              changed="${{ needs.build-and-push.outputs.ecommerce-ui }}"
+            elif [ "$service" == "product-catalog" ]; then
+              changed="${{ needs.build-and-push.outputs.product-catalog }}"
+            elif [ "$service" == "product-inventory" ]; then
+              changed="${{ needs.build-and-push.outputs.product-inventory }}"
+            elif [ "$service" == "order-management" ]; then
+              changed="${{ needs.build-and-push.outputs.order-management }}"
+            elif [ "$service" == "shipping-and-handling" ]; then
+              changed="${{ needs.build-and-push.outputs.shipping-and-handling }}"
+            elif [ "$service" == "profile-management" ]; then
+              changed="${{ needs.build-and-push.outputs.profile-management }}"
+            elif [ "$service" == "contact-support-team" ]; then
+              changed="${{ needs.build-and-push.outputs.contact-support-team }}"
+            fi
+
             if [ "$changed" == "true" ]; then
               manifest_file="manifest/${service}.yaml"
               if [ -f "$manifest_file" ]; then
@@ -145,3 +162,16 @@ jobs:
               fi
             fi
           done
+
+  final-job:
+    name: Final Job
+    runs-on: ubuntu-latest
+    needs: update-manifests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Summary
+        run: |
+          echo "✅ All jobs complete!"
+          echo "Docker images built & manifests updated with commit hash ${GITHUB_SHA}"
