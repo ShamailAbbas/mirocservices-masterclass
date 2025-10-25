@@ -4,9 +4,9 @@
 .home-header p{color:var(--muted);margin-top:8px}
 
 .home-content{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--gap)}
-.microservice-section{background:linear-gradient(180deg,var(--panel),var(--accent-2));padding:18px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 24px rgba(59,43,51,0.04)}
+.microservice-section{background:var(--panel);padding:20px;border-radius:var(--radius);text-align:center;box-shadow:var(--shadow)}
 .microservice-section h2{font-size:18px;margin:0 0 8px;color:var(--text)}
 .microservice-section p{color:var(--muted);margin:0 0 12px}
-.btn{display:inline-block;padding:8px 16px;background:transparent;color:var(--text);border-radius:999px;border:1px solid var(--accent)}
-.btn.primary{background:var(--accent);color:#fff;border:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 16px;border-radius:999px;border:none;background:var(--accent);color:#fff}
+.btn.secondary{background:transparent;color:var(--text);border:1px solid rgba(15,23,32,0.06)}
 .btn:hover{opacity:0.95}
